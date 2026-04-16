@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { signInWithPopup, signInAnonymously } from 'firebase/auth';
 import { auth, googleProvider, signInAsGuest } from '../firebase.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -8,26 +8,40 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate(from, { replace: true });
-    } catch (error) {
-      console.error("Login failed", error);
+      setLoading(true);
+      setError('');
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("Google login result:", result);
+      if (result?.user) {
+        navigate(from, { replace: true });
+      }
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      setError(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGuestLogin = async () => {
     try {
+      setLoading(true);
+      setError('');
       const result = await signInAsGuest();
       console.log("Guest login result:", result);
       if (result?.user) {
         navigate("/signup", { replace: true });
       }
-    } catch (error) {
-      console.error("Guest login failed:", error);
-      alert("Guest login failed. Please ensure anonymous auth is enabled in Firebase console.");
+    } catch (err: any) {
+      console.error("Guest login failed:", err);
+      setError(err.message || 'Guest login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,9 +58,14 @@ const Login: React.FC = () => {
           Share your moments with the world.
         </p>
 
+        {error && (
+          <div className="w-full bg-red-50 text-red-600 text-sm p-3 rounded mb-4">{error}</div>
+        )}
+
         <button
           onClick={handleLogin}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center space-x-2"
+          disabled={loading}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
         >
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/google.svg" alt="Google" className="w-5 h-5 bg-white rounded-full p-0.5" referrerPolicy="no-referrer" />
           <span>Log in with Google</span>
@@ -54,7 +73,8 @@ const Login: React.FC = () => {
 
         <button
           onClick={handleGuestLogin}
-          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition-colors flex items-center justify-center space-x-2 mt-3"
+          disabled={loading}
+          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition-colors flex items-center justify-center space-x-2 mt-3 disabled:opacity-50"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
