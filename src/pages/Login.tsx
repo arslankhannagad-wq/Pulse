@@ -20,10 +20,14 @@ const Login: React.FC = () => {
 
   const handleGuestLogin = async () => {
     try {
-      await signInAsGuest();
-      navigate("/signup", { replace: true });
+      const result = await signInAsGuest();
+      console.log("Guest login result:", result);
+      if (result?.user) {
+        navigate("/signup", { replace: true });
+      }
     } catch (error) {
-      console.error("Guest login failed", error);
+      console.error("Guest login failed:", error);
+      alert("Guest login failed. Please ensure anonymous auth is enabled in Firebase console.");
     }
   };
 
