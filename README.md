@@ -1,7 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="Pulse Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # Pulse — Social Media Mini Platform
 
 > A full-stack social media platform built with React and Firebase, enabling users to create profiles, share posts, and engage through likes, comments, and interactions.
