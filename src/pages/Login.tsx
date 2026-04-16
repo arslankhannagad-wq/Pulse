@@ -1,6 +1,6 @@
 import React from 'react';
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase.ts';
+import { signInWithPopup, signInAnonymously } from 'firebase/auth';
+import { auth, googleProvider, signInAsGuest } from '../firebase.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 
@@ -15,6 +15,15 @@ const Login: React.FC = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error("Login failed", error);
+    }
+  };
+
+  const handleGuestLogin = async () => {
+    try {
+      await signInAsGuest();
+      navigate("/signup", { replace: true });
+    } catch (error) {
+      console.error("Guest login failed", error);
     }
   };
 
@@ -37,6 +46,17 @@ const Login: React.FC = () => {
         >
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/google.svg" alt="Google" className="w-5 h-5 bg-white rounded-full p-0.5" referrerPolicy="no-referrer" />
           <span>Log in with Google</span>
+        </button>
+
+        <button
+          onClick={handleGuestLogin}
+          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition-colors flex items-center justify-center space-x-2 mt-3"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Continue as Guest</span>
         </button>
 
         <div className="flex items-center my-6 w-full">
