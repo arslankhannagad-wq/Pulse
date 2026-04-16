@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "bio": { "type": "string" },
+        "profilePhoto": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "followersCount": { "type": "number" },
+        "followingCount": { "type": "number" },
+        "postsCount": { "type": "number" }
+      }
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Media post (photo/video)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "authorUsername": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["photo", "video"] },
+        "mediaUrl": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "caption": { "type": "string" },
+        "location": { "type": "string" },
+        "hashtags": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "commentsCount": { "type": "number" }
+      }
+    },
+    "Story": {
+      "title": "Story",
+      "description": "Ephemeral media",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "username": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["photo", "video"] },
+        "mediaUrl": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "expiresAt": { "type": "string" }
+      }
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Direct message",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Chat metadata",
+      "type": "object",
+      "properties": {
+        "participantIds": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "lastUpdatedAt": { "type": "string" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Activity notification",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "fromUserId": { "type": "string" },
+        "fromUsername": { "type": "string" },
+        "type": { "type": "string", "enum": ["like", "comment", "follow"] },
+        "postId": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "read": { "type": "boolean" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/posts/{postId}": { "schema": "Post", "description": "Photos and videos" },
+    "/stories/{storyId}": { "schema": "Story", "description": "24h stories" },
+    "/conversations/{convId}": { "schema": "Conversation", "description": "Direct messages" },
+    "/conversations/{convId}/messages/{msgId}": { "schema": "Message", "description": "Individual messages" },
+    "/notifications/{notifId}": { "schema": "Notification", "description": "User activity notifications" }
+  }
+}
